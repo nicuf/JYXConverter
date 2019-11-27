@@ -13,6 +13,14 @@ import (
 //Map is a interface used for xml marshaling
 type Map map[string]interface{}
 
+type xmlEntry struct {
+	XMLName xml.Name
+	Attrs   []xml.Attr `xml:"-"`
+	Content string     `xml:",innerxml"`
+	Nodes   []xmlEntry `xml:",any"`
+	Value   string     `xml:",chardata"`
+}
+
 func getElementTokens(element interface{}, name string) []xml.Token {
 	tokens := []xml.Token{}
 
@@ -80,37 +88,7 @@ func convertInterface(object interface{}) interface{} {
 	}
 }
 
-//MarshalXML is a method used to Marshall a Map to xml
-func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	tokens := []xml.Token{start}
-	tokens = append(tokens, getMapTokens(m)...)
-	tokens = append(tokens, xml.EndElement{start.Name})
-
-	for _, t := range tokens {
-		err := e.EncodeToken(t)
-		if err != nil {
-			return err
-		}
-	}
-
-	err := e.Flush()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-type xmlEntry struct {
-	XMLName xml.Name
-	Attrs   []xml.Attr `xml:"-"`
-	Content string     `xml:",innerxml"`
-	Nodes   []xmlEntry `xml:",any"`
-	Value   string     `xml:",chardata"`
-}
-
-func decodeElement(entry xmlEntry) interface{} {
+func decodeXMLEntry(entry xmlEntry) interface{} {
 	//fmt.Println("Decoding entry:", entry)
 	if entry.Nodes == nil {
 		return entry.Value
@@ -118,7 +96,7 @@ func decodeElement(entry xmlEntry) interface{} {
 	m := Map{}
 	for _, node := range entry.Nodes {
 		elName := node.XMLName.Local
-		decodedEl := decodeElement(node)
+		decodedEl := decodeXMLEntry(node)
 		if _, ok := m[elName]; ok {
 			switch valueType := m[elName].(type) {
 			case []interface{}:
@@ -143,13 +121,35 @@ func decodeElement(entry xmlEntry) interface{} {
 	return m
 }
 
+//MarshalXML is a method used to Marshall a Map to xml
+func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	tokens := []xml.Token{start}
+	tokens = append(tokens, getMapTokens(m)...)
+	tokens = append(tokens, xml.EndElement{start.Name})
+
+	for _, t := range tokens {
+		err := e.EncodeToken(t)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := e.Flush()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 //UnmarshalXML is a method used to Unmarshal a xml to a Map
 func (m *Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	*m = Map{}
 	e := xmlEntry{}
 	var err error
 	for err = d.Decode(&e); err == nil; err = d.Decode(&e) {
-		(*m)[e.XMLName.Local] = decodeElement(e)
+		(*m)[e.XMLName.Local] = decodeXMLEntry(e)
 		e = xmlEntry{}
 	}
 	if err != nil && err != io.EOF {
