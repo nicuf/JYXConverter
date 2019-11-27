@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"strconv"
 
 	"gopkg.in/yaml.v2"
@@ -79,7 +80,7 @@ func convertInterface(object interface{}) interface{} {
 	}
 }
 
-//MarshalXML is a method used to Marshall a MAp to xml
+//MarshalXML is a method used to Marshall a Map to xml
 func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 	tokens := []xml.Token{start}
@@ -98,6 +99,41 @@ func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
+	return nil
+}
+
+type xmlEntry struct {
+	XMLName xml.Name
+	Attrs   []xml.Attr `xml:"-"`
+	Content string     `xml:",innerxml"`
+	Nodes   []xmlEntry `xml:",any"`
+	Value   string     `xml:",chardata"`
+}
+
+func decodeElement(entry xmlEntry) interface{} {
+	//fmt.Println("Decoding entry:", entry)
+	if entry.Nodes == nil {
+		return entry.Value
+	}
+	m := Map{}
+	for _, node := range entry.Nodes {
+		m[node.XMLName.Local] = decodeElement(node)
+	}
+	return m
+}
+
+//UnmarshalXML is a method used to Unmarshal a xml to a Map
+func (m *Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	*m = Map{}
+	e := xmlEntry{}
+	var err error
+	for err = d.Decode(&e); err == nil; err = d.Decode(&e) {
+		(*m)[e.XMLName.Local] = decodeElement(e)
+		e = xmlEntry{}
+	}
+	if err != nil && err != io.EOF {
+		return err
+	}
 	return nil
 }
 
@@ -132,11 +168,11 @@ func YamlToJSON(bytes []byte) ([]byte, error) {
 
 	var yamlMap map[interface{}]interface{}
 	err := yaml.Unmarshal(bytes, &yamlMap)
-	result := convertInterface(yamlMap)
 	if err != nil {
 		return nil, err
 	}
 
+	result := convertInterface(yamlMap)
 	return json.MarshalIndent(&result, "", "\t")
 }
 
@@ -145,11 +181,39 @@ func YamlToXML(bytes []byte) ([]byte, error) {
 
 	var yamlMap map[interface{}]interface{}
 	err := yaml.Unmarshal(bytes, &yamlMap)
+	if err != nil {
+		return nil, err
+	}
+
 	result := convertInterface(yamlMap)
+	return xml.MarshalIndent(&result, "", "\t")
+}
+
+//XMLToJSON converts xml to json
+func XMLToJSON(bytes []byte) ([]byte, error) {
+
+	var xmlMap Map
+	err := xml.Unmarshal(bytes, &xmlMap)
+	if err != nil {
+		return nil, err
+	}
+
+	result := convertInterface(xmlMap)
+
+	return json.MarshalIndent(&result, "", "\t")
+}
+
+//XMLToYaml converts xml to yaml
+func XMLToYaml(bytes []byte) ([]byte, error) {
+
+	var xmlMap Map
+	err := xml.Unmarshal(bytes, &xmlMap)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return xml.MarshalIndent(&result, "", "\t")
+	result := convertInterface(xmlMap)
+
+	return yaml.Marshal(&result)
 }

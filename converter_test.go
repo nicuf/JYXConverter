@@ -60,3 +60,31 @@ func TestYamlToXMLAndJSON(t *testing.T) {
 	t.Log("json from yaml is:")
 	t.Log(string(jsonBytes))
 }
+
+func TestXMLToYamlAndJSON(t *testing.T) {
+	xmlBytes, err := ioutil.ReadFile("./test_files/Person.xml")
+
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	t.Log("xml from file is:")
+	t.Log(string(xmlBytes))
+	yamlBytes, err := XMLToYaml(xmlBytes)
+
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	t.Log("yaml from xml is:")
+	t.Log(string(yamlBytes))
+
+	jsonBytes, err := XMLToJSON(xmlBytes)
+
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	t.Log("json from yaml is:")
+	t.Log(string(jsonBytes))
+}
