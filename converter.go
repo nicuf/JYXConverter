@@ -117,7 +117,28 @@ func decodeElement(entry xmlEntry) interface{} {
 	}
 	m := Map{}
 	for _, node := range entry.Nodes {
-		m[node.XMLName.Local] = decodeElement(node)
+		elName := node.XMLName.Local
+		decodedEl := decodeElement(node)
+		if _, ok := m[elName]; ok {
+			switch valueType := m[elName].(type) {
+			case []interface{}:
+				m[elName] = append(valueType, decodedEl)
+			case interface{}:
+				lastElement := m[elName]
+				sliceElements := []interface{}{}
+				sliceElements = append(sliceElements, lastElement)
+				sliceElements = append(sliceElements, decodedEl)
+				m[elName] = sliceElements
+			}
+		} else {
+			m[elName] = decodedEl
+		}
+	}
+	isElementAnArray := len(m) == 1
+	if isElementAnArray {
+		for _, value := range m {
+			return value
+		}
 	}
 	return m
 }

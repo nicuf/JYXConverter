@@ -85,6 +85,6 @@ func TestXMLToYamlAndJSON(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	t.Log("json from yaml is:")
+	t.Log("json from xml is:")
 	t.Log(string(jsonBytes))
 }
