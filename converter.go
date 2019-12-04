@@ -1,3 +1,13 @@
+//Package jyxconverter provides functions to convert yaml, xml and json between them
+//	xml <-> json
+//	xml <-> yaml
+//	json <-> yaml
+//i.e. you have a string containing json data and you want to convert it to xml or yaml
+//	jsonString = {"oneKey":"oneValue"}
+//it just have to call
+//	xmlBytes, err := JSONToXML([]byte(jsonString))
+//if there is no error, you can make a string from the byte array
+//	xmlString := string(xmlBytes)
 package jyxconverter
 
 import (
@@ -10,7 +20,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-//Map is a interface used for xml marshaling
+//Map is the simplest data structure to store a xml, yaml or a json
 type Map map[string]interface{}
 
 type xmlEntry struct {
@@ -121,7 +131,8 @@ func decodeXMLEntry(entry xmlEntry) interface{} {
 	return m
 }
 
-//MarshalXML is a method used to Marshall a Map to xml
+//MarshalXML is an implementation of the xml.Marshaler interface which the Map
+//should implement in order for xml.Encoder to be able to marshal a Map to xml
 func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 	tokens := []xml.Token{start}
@@ -143,7 +154,8 @@ func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-//UnmarshalXML is a method used to Unmarshal a xml to a Map
+//UnmarshalXML is an implementation of the xml.Unmarshaler interface which the Map
+//should implement in order for xml.Decoder to be able to unmarshal xml to a Map
 func (m *Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	*m = Map{}
 	e := xmlEntry{}
@@ -159,10 +171,10 @@ func (m *Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 //JSONToYaml converts json into yaml
-func JSONToYaml(bytes []byte) ([]byte, error) {
+func JSONToYaml(jsonBytes []byte) ([]byte, error) {
 
 	var result Map
-	err := json.Unmarshal(bytes, &result)
+	err := json.Unmarshal(jsonBytes, &result)
 
 	if err != nil {
 		return nil, err
@@ -172,10 +184,10 @@ func JSONToYaml(bytes []byte) ([]byte, error) {
 }
 
 //JSONToXML converts json to xml
-func JSONToXML(bytes []byte) ([]byte, error) {
+func JSONToXML(jsonBytes []byte) ([]byte, error) {
 
 	var result Map
-	err := json.Unmarshal(bytes, &result)
+	err := json.Unmarshal(jsonBytes, &result)
 
 	if err != nil {
 		return nil, err
@@ -185,10 +197,10 @@ func JSONToXML(bytes []byte) ([]byte, error) {
 }
 
 //YamlToJSON converts yaml to json
-func YamlToJSON(bytes []byte) ([]byte, error) {
+func YamlToJSON(yamlBytes []byte) ([]byte, error) {
 
 	var yamlMap map[interface{}]interface{}
-	err := yaml.Unmarshal(bytes, &yamlMap)
+	err := yaml.Unmarshal(yamlBytes, &yamlMap)
 	if err != nil {
 		return nil, err
 	}
@@ -198,10 +210,10 @@ func YamlToJSON(bytes []byte) ([]byte, error) {
 }
 
 //YamlToXML converts yaml to xml
-func YamlToXML(bytes []byte) ([]byte, error) {
+func YamlToXML(yamlBytes []byte) ([]byte, error) {
 
 	var yamlMap map[interface{}]interface{}
-	err := yaml.Unmarshal(bytes, &yamlMap)
+	err := yaml.Unmarshal(yamlBytes, &yamlMap)
 	if err != nil {
 		return nil, err
 	}
@@ -211,10 +223,10 @@ func YamlToXML(bytes []byte) ([]byte, error) {
 }
 
 //XMLToJSON converts xml to json
-func XMLToJSON(bytes []byte) ([]byte, error) {
+func XMLToJSON(xmlBytes []byte) ([]byte, error) {
 
 	var xmlMap Map
-	err := xml.Unmarshal(bytes, &xmlMap)
+	err := xml.Unmarshal(xmlBytes, &xmlMap)
 	if err != nil {
 		return nil, err
 	}
@@ -225,10 +237,10 @@ func XMLToJSON(bytes []byte) ([]byte, error) {
 }
 
 //XMLToYaml converts xml to yaml
-func XMLToYaml(bytes []byte) ([]byte, error) {
+func XMLToYaml(xmlBytes []byte) ([]byte, error) {
 
 	var xmlMap Map
-	err := xml.Unmarshal(bytes, &xmlMap)
+	err := xml.Unmarshal(xmlBytes, &xmlMap)
 
 	if err != nil {
 		return nil, err
