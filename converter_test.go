@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestJSONToXMLAndYaml(t *testing.T) {
+func TestJSONToXMLAndYamlPositiveFlow(t *testing.T) {
 	jsonBytes, err := ioutil.ReadFile("./test_files/Person.json")
 
 	if err != nil {
@@ -33,7 +33,7 @@ func TestJSONToXMLAndYaml(t *testing.T) {
 	t.Log(string(yamlBytes))
 }
 
-func TestYamlToXMLAndJSON(t *testing.T) {
+func TestYamlToXMLAndJSONPositiveFlow(t *testing.T) {
 	yamlBytes, err := ioutil.ReadFile("./test_files/Person.yaml")
 
 	if err != nil {
@@ -61,7 +61,7 @@ func TestYamlToXMLAndJSON(t *testing.T) {
 	t.Log(string(jsonBytes))
 }
 
-func TestXMLToYamlAndJSON(t *testing.T) {
+func TestXMLToYamlAndJSONPositiveFlow(t *testing.T) {
 	xmlBytes, err := ioutil.ReadFile("./test_files/Person.xml")
 
 	if err != nil {
@@ -85,6 +85,33 @@ func TestXMLToYamlAndJSON(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	t.Log("json from yaml is:")
+	t.Log("json from xml is:")
 	t.Log(string(jsonBytes))
+}
+
+func TestEmptyXMLToJsonShouldReturnError(t *testing.T) {
+	xmlBytes := []byte{}
+	_, err := XMLToJSON(xmlBytes)
+
+	if err == nil {
+		t.Errorf("Trying to convert empty string from xml to json should return an error!")
+	}
+}
+
+func TestEmptyYamlToJsonShouldReturnErrorOrEmptyJSON(t *testing.T) {
+	yamlBytes := []byte{}
+	jsonBytes, err := YamlToJSON(yamlBytes)
+
+	if err == nil && len(jsonBytes) > 2 {
+		t.Errorf("Trying to convert empty string from yaml to json should return an error!")
+	}
+}
+
+func TestEmptyJsonToXMLShouldReturnError(t *testing.T) {
+	jsonBytes := []byte{}
+	_, err := XMLToJSON(jsonBytes)
+
+	if err == nil {
+		t.Errorf("Trying to convert empty string from json to xml should return an error!")
+	}
 }

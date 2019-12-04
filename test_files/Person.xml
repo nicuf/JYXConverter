@@ -3,9 +3,6 @@
 	<Surname>Dhoe</Surname>
 	<Gender>0</Gender>
 	<Maried>true</Maried>
-	<Skills>programming</Skills>
-	<Skills>gardening</Skills>
-	<Skills>communication</Skills>
 	<Address>
 		<City>Wien</City>
 		<HouseNmbr>34</HouseNmbr>
