@@ -1,4 +1,4 @@
-JYXconverter
+JYXConverter
 ============
 
 Package jyxconverter provides functions to convert yaml, xml and json
