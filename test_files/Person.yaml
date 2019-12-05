@@ -1,18 +1,19 @@
-name: Jhon
-surname: Dhoe
-gender: 0
-maried: true
-skills:
-  - programming
-  - gardening
-  - communication
-address:
-  city: Wien
-  housenmbr: "34"
-  apartmentnmbr: "90"
-  province: 
-    country: Austria
-    county: WienCounty
-socialpages:
-  facebook: fbJhon
-  linkedin: lkdnJhon
+Person:
+  name: Jhon
+  surname: Dhoe
+  gender: 0
+  maried: true
+  skills:
+    - programming
+    - gardening
+    - communication
+  address:
+    city: Wien
+    housenmbr: "34"
+    apartmentnmbr: "90"
+    province: 
+      country: Austria
+      county: WienCounty
+  socialpages:
+    facebook: fbJhon
+    linkedin: lkdnJhon
