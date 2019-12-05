@@ -135,9 +135,7 @@ func decodeXMLEntry(entry xmlEntry) interface{} {
 //should implement in order for xml.Encoder to be able to marshal a Map to xml
 func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
-	tokens := []xml.Token{start}
-	tokens = append(tokens, getMapTokens(m)...)
-	tokens = append(tokens, xml.EndElement{start.Name})
+	tokens := getMapTokens(m)
 
 	for _, t := range tokens {
 		err := e.EncodeToken(t)
@@ -158,15 +156,17 @@ func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 //should implement in order for xml.Decoder to be able to unmarshal xml to a Map
 func (m *Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	*m = Map{}
+	innerMap := Map{}
 	e := xmlEntry{}
 	var err error
 	for err = d.Decode(&e); err == nil; err = d.Decode(&e) {
-		(*m)[e.XMLName.Local] = decodeXMLEntry(e)
+		innerMap[e.XMLName.Local] = decodeXMLEntry(e)
 		e = xmlEntry{}
 	}
 	if err != nil && err != io.EOF {
 		return err
 	}
+	(*m)[start.Name.Local] = innerMap
 	return nil
 }
 
