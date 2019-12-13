@@ -20,7 +20,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-//Map is the simplest data structure to store a xml, yaml or a json
+//Map is a generic data structure to store a xml, yaml or a json
 type Map map[string]interface{}
 
 type xmlEntry struct {
@@ -98,6 +98,19 @@ func convertInterface(object interface{}) interface{} {
 	}
 }
 
+func convertToMap(object interface{}) Map {
+	result := Map{}
+	switch valueType := object.(type) {
+	case map[interface{}]interface{}:
+		for key, value := range valueType {
+			result[fmt.Sprint(key)] = convertInterface(value)
+		}
+	default:
+		result = object.(Map)
+	}
+	return result
+}
+
 func decodeXMLEntry(entry xmlEntry) interface{} {
 	//fmt.Println("Decoding entry:", entry)
 	if entry.Nodes == nil {
@@ -170,11 +183,49 @@ func (m *Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
+//XMLToMap extracts a Map from xml
+func XMLToMap(xmlBytes []byte) (Map, error) {
+	var xmlMap Map
+	err := xml.Unmarshal(xmlBytes, &xmlMap)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := convertToMap(xmlMap)
+
+	return result, nil
+}
+
+//YamlToMap extracts a Map from yaml
+func YamlToMap(yamlBytes []byte) (Map, error) {
+	var yamlMap map[interface{}]interface{}
+	err := yaml.Unmarshal(yamlBytes, &yamlMap)
+	if err != nil {
+		return nil, err
+	}
+
+	result := convertToMap(yamlMap)
+
+	return result, nil
+}
+
+//JSONToMap extracts a Map from json
+func JSONToMap(jsonBytes []byte) (Map, error) {
+	var result Map
+	err := json.Unmarshal(jsonBytes, &result)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 //JSONToYaml converts json into yaml
 func JSONToYaml(jsonBytes []byte) ([]byte, error) {
 
-	var result Map
-	err := json.Unmarshal(jsonBytes, &result)
+	result, err := JSONToMap(jsonBytes)
 
 	if err != nil {
 		return nil, err
@@ -186,8 +237,7 @@ func JSONToYaml(jsonBytes []byte) ([]byte, error) {
 //JSONToXML converts json to xml
 func JSONToXML(jsonBytes []byte) ([]byte, error) {
 
-	var result Map
-	err := json.Unmarshal(jsonBytes, &result)
+	result, err := JSONToMap(jsonBytes)
 
 	if err != nil {
 		return nil, err
@@ -198,55 +248,43 @@ func JSONToXML(jsonBytes []byte) ([]byte, error) {
 
 //YamlToJSON converts yaml to json
 func YamlToJSON(yamlBytes []byte) ([]byte, error) {
-
-	var yamlMap map[interface{}]interface{}
-	err := yaml.Unmarshal(yamlBytes, &yamlMap)
+	yamlMap, err := YamlToMap(yamlBytes)
 	if err != nil {
 		return nil, err
 	}
-
-	result := convertInterface(yamlMap)
-	return json.MarshalIndent(&result, "", "\t")
+	return json.MarshalIndent(&yamlMap, "", "\t")
 }
 
 //YamlToXML converts yaml to xml
 func YamlToXML(yamlBytes []byte) ([]byte, error) {
 
-	var yamlMap map[interface{}]interface{}
-	err := yaml.Unmarshal(yamlBytes, &yamlMap)
+	yamlMap, err := YamlToMap(yamlBytes)
 	if err != nil {
 		return nil, err
 	}
-
-	result := convertInterface(yamlMap)
-	return xml.MarshalIndent(&result, "", "\t")
+	return xml.MarshalIndent(&yamlMap, "", "\t")
 }
 
 //XMLToJSON converts xml to json
 func XMLToJSON(xmlBytes []byte) ([]byte, error) {
 
-	var xmlMap Map
-	err := xml.Unmarshal(xmlBytes, &xmlMap)
+	xmlMap, err := XMLToMap(xmlBytes)
+
 	if err != nil {
 		return nil, err
 	}
 
-	result := convertInterface(xmlMap)
-
-	return json.MarshalIndent(&result, "", "\t")
+	return json.MarshalIndent(&xmlMap, "", "\t")
 }
 
 //XMLToYaml converts xml to yaml
 func XMLToYaml(xmlBytes []byte) ([]byte, error) {
 
-	var xmlMap Map
-	err := xml.Unmarshal(xmlBytes, &xmlMap)
+	xmlMap, err := XMLToMap(xmlBytes)
 
 	if err != nil {
 		return nil, err
 	}
 
-	result := convertInterface(xmlMap)
-
-	return yaml.Marshal(&result)
+	return yaml.Marshal(&xmlMap)
 }
