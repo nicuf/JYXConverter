@@ -5,6 +5,44 @@ import (
 	"testing"
 )
 
+const jsonTestString string = `{ 
+		\"Person\": {
+			\"Name\": \"Jhon\",
+			\"Surname\": \"Dhoe\",
+			\"Gender\": 0,
+			\"Maried\": true,
+			\"Skills\": [
+				\"programming\",
+				\"gardening\",
+				\"communication\"
+			],
+			\"Address\": {
+				\"City\": \"Wien\",
+				\"HouseNmbr\": \"34\",
+				\"ApartmentNmbr\": \"90\",
+				\"Province\": {
+					\"Country\": \"Austria\",
+					\"County\": \"WienCounty\"
+				}
+			},
+			\"SocialPages\": {
+				\"facebook\": \"fbJhon\",
+				\"linkedin\": \"lkdnJhon\"
+			}
+		}
+	}`
+
+var result string
+
+func BenchmarkJSONToXML(b *testing.B) {
+	var r []byte
+	jsonBytes := []byte(jsonTestString)
+	for n := 0; n < b.N; n++ {
+		r, _ = JSONToXML(jsonBytes)
+	}
+	result = string(r)
+}
+
 func TestJSONToXMLAndYamlPositiveFlow(t *testing.T) {
 	jsonBytes, err := ioutil.ReadFile("./test_files/Person.json")
 
