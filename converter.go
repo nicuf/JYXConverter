@@ -39,7 +39,7 @@ func getElementTokens(element interface{}, name string) []xml.Token {
 
 	switch valueType := element.(type) {
 	case int:
-		tokens = append(tokens, xml.CharData(string(valueType)))
+		tokens = append(tokens, xml.CharData(fmt.Sprintf("%v", valueType)))
 	case float64:
 		tokens = append(tokens, xml.CharData(strconv.FormatFloat(valueType, 'f', 6, 64)))
 	case string:
