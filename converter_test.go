@@ -32,6 +32,28 @@ const jsonTestString string = `{
 		}
 	}`
 
+const yamlTestString string = `
+Person:
+	name: Jhon
+	surname: Dhoe
+	gender: 0
+	maried: true
+	skills:
+		- programming
+		- gardening
+		- communication
+	address:
+		city: Wien
+		housenmbr: "34"
+		apartmentnmbr: "90"
+		province: 
+			country: Austria
+			county: WienCounty
+	socialpages:
+		facebook: fbJhon
+		linkedin: lkdnJhon
+`
+
 var result string
 
 func BenchmarkJSONToXML(b *testing.B) {
@@ -48,6 +70,15 @@ func BenchmarkJSONToYaml(b *testing.B) {
 	jsonBytes := []byte(jsonTestString)
 	for n := 0; n < b.N; n++ {
 		r, _ = JSONToYaml(jsonBytes)
+	}
+	result = string(r)
+}
+
+func BenchmarkYamlToXML(b *testing.B) {
+	var r []byte
+	jsonBytes := []byte(jsonTestString)
+	for n := 0; n < b.N; n++ {
+		r, _ = YamlToXML(jsonBytes)
 	}
 	result = string(r)
 }
