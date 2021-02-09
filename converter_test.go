@@ -82,6 +82,14 @@ func BenchmarkYamlToXML(b *testing.B) {
 	}
 	result = string(r)
 }
+func BenchmarkYamlToJSON(b *testing.B) {
+	var r []byte
+	jsonBytes := []byte(jsonTestString)
+	for n := 0; n < b.N; n++ {
+		r, _ = YamlToXML(jsonBytes)
+	}
+	result = string(r)
+}
 
 func TestJSONToXMLAndYamlPositiveFlow(t *testing.T) {
 	jsonBytes, err := ioutil.ReadFile("./test_files/Person.json")
