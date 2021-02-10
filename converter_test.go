@@ -5,32 +5,33 @@ import (
 	"testing"
 )
 
-const jsonTestString string = `{ 
-		\"Person\": {
-			\"Name\": \"Jhon\",
-			\"Surname\": \"Dhoe\",
-			\"Gender\": 0,
-			\"Maried\": true,
-			\"Skills\": [
-				\"programming\",
-				\"gardening\",
-				\"communication\"
-			],
-			\"Address\": {
-				\"City\": \"Wien\",
-				\"HouseNmbr\": \"34\",
-				\"ApartmentNmbr\": \"90\",
-				\"Province\": {
-					\"Country\": \"Austria\",
-					\"County\": \"WienCounty\"
-				}
-			},
-			\"SocialPages\": {
-				\"facebook\": \"fbJhon\",
-				\"linkedin\": \"lkdnJhon\"
+const jsonTestString string = `
+{ 
+	\"Person\": {
+		\"Name\": \"Jhon\",
+		\"Surname\": \"Dhoe\",
+		\"Gender\": 0,
+		\"Maried\": true,
+		\"Skills\": [
+			\"programming\",
+			\"gardening\",
+			\"communication\"
+		],
+		\"Address\": {
+			\"City\": \"Wien\",
+			\"HouseNmbr\": \"34\",
+			\"ApartmentNmbr\": \"90\",
+			\"Province\": {
+				\"Country\": \"Austria\",
+				\"County\": \"WienCounty\"
 			}
+		},
+		\"SocialPages\": {
+			\"facebook\": \"fbJhon\",
+			\"linkedin\": \"lkdnJhon\"
 		}
-	}`
+	}
+}`
 
 const yamlTestString string = `
 Person:
@@ -54,6 +55,32 @@ Person:
 		linkedin: lkdnJhon
 `
 
+const xmlTestString = `
+<Person>
+	<Name>Jhon</Name>
+	<Surname>Dhoe</Surname>
+	<Gender>0</Gender>
+	<Maried>true</Maried>
+	<Address>
+		<City>Wien</City>
+		<HouseNmbr>34</HouseNmbr>
+		<ApartmentNmbr>90</ApartmentNmbr>
+		<Province>
+			<Country>Austria</Country>
+			<County>WienCounty</County>
+		</Province>
+	</Address>
+	<SocialPages>
+		<facebook>fbJhon</facebook>
+		<linkedin>lkdnJhon</linkedin>
+	</SocialPages>
+	<Skills>
+			<SkillsElement>programming</SkillsElement>
+			<SkillsElement>gardening</SkillsElement>
+			<SkillsElement>communication</SkillsElement>
+	</Skills>
+</Person>`
+
 var result string
 
 func BenchmarkJSONToXML(b *testing.B) {
@@ -76,17 +103,27 @@ func BenchmarkJSONToYaml(b *testing.B) {
 
 func BenchmarkYamlToXML(b *testing.B) {
 	var r []byte
-	jsonBytes := []byte(jsonTestString)
+	yamlBytes := []byte(yamlTestString)
 	for n := 0; n < b.N; n++ {
-		r, _ = YamlToXML(jsonBytes)
+		r, _ = YamlToXML(yamlBytes)
 	}
 	result = string(r)
 }
+
 func BenchmarkYamlToJSON(b *testing.B) {
 	var r []byte
-	jsonBytes := []byte(jsonTestString)
+	yamlBytes := []byte(yamlTestString)
 	for n := 0; n < b.N; n++ {
-		r, _ = YamlToXML(jsonBytes)
+		r, _ = YamlToXML(yamlBytes)
+	}
+	result = string(r)
+}
+
+func BenchmarkXMLToJSON(b *testing.B) {
+	var r []byte
+	xmlBytes := []byte(xmlTestString)
+	for n := 0; n < b.N; n++ {
+		r, _ = XMLToJSON(xmlBytes)
 	}
 	result = string(r)
 }
