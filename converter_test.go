@@ -1,6 +1,7 @@
 package jyxconverter
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 )
@@ -246,4 +247,29 @@ func TestEmptyJsonToXMLShouldReturnError(t *testing.T) {
 	if err == nil {
 		t.Errorf("Trying to convert empty string from json to xml should return an error!")
 	}
+}
+
+func ExampleJSONToXML() {
+	jsonTestString := `
+{ 
+	"Person": {
+		"Name": "Jhon",
+		"Surname": "Dhoe",
+		"Gender": 0,
+		"Maried": true
+	}
+}`
+	xmlBytes, err := JSONToXML([]byte(jsonTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(xmlBytes))
+	//Output:
+	//<Person>
+	//	<Name>Jhon</Name>
+	//	<Surname>Dhoe</Surname>
+	//	<Gender>0.000000</Gender>
+	//	<Maried>true</Maried>
+	//</Person>
 }
