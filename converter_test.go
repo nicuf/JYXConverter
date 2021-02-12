@@ -297,3 +297,28 @@ func ExampleJSONToYaml() {
 	//	Gender: 0
 	//	Maried: true
 }
+
+func ExampleYamlToJSON() {
+	yamlTestString := `
+Person:
+  Name: Jhon
+  Surname: Dhoe
+  Gender: 0
+  Maried: true
+`
+	jsonBytes, err := YamlToJSON([]byte(yamlTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(jsonBytes))
+	//Output:
+	//{
+	//	"Person": {
+	//		"Name": "Jhon",
+	//		"Surname": "Dhoe",
+	//		"Gender": 0,
+	//		"Maried": true
+	//	}
+	//}
+}
