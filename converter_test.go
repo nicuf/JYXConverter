@@ -345,3 +345,27 @@ Person:
 	//	<Maried>true</Maried>
 	//</Person>
 }
+
+func ExampleXMLToYaml() {
+	xmlTestString := `
+	<Person>
+		<Name>Jhon</Name>
+		<Surname>Dhoe</Surname>
+		<Gender>0</Gender>
+		<Maried>true</Maried>
+	</Person>
+	`
+
+	yamlBytes, err := XMLToYaml([]byte(xmlTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(yamlBytes))
+	//Output:
+	//Person:
+	//	Name: Jhon
+	//	Surname: Dhoe
+	//	Gender: 0
+	//	Maried: true
+}
