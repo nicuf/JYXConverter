@@ -369,3 +369,30 @@ func ExampleXMLToYaml() {
 	//	Gender: 0
 	//	Maried: true
 }
+
+func ExampleXMLToJSON() {
+	xmlTestString := `
+	<Person>
+		<Name>Jhon</Name>
+		<Surname>Dhoe</Surname>
+		<Gender>0</Gender>
+		<Maried>true</Maried>
+	</Person>
+	`
+
+	jsonBytes, err := XMLToJSON([]byte(xmlTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(jsonBytes))
+	//Output:
+	//{
+	//	"Person": {
+	//		"Name": "Jhon",
+	//		"Surname": "Dhoe",
+	//		"Gender": 0,
+	//		"Maried": true
+	//	}
+	//}
+}
