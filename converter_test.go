@@ -434,3 +434,23 @@ Person:
 	//Output:
 	//map[Person:map[Gender:0 Maried:true Name:Jhon Surname:Dhoe]]
 }
+
+func ExampleXMLToMap() {
+	xmlTestString := `
+	<Person>
+		<Name>Jhon</Name>
+		<Surname>Dhoe</Surname>
+		<Gender>0</Gender>
+		<Maried>true</Maried>
+	</Person>
+	`
+
+	m, err := XMLToMap([]byte(xmlTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(m)
+	//Output:
+	//map[Person:map[Gender:0 Maried:true Name:Jhon Surname:Dhoe]]
+}
