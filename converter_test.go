@@ -396,3 +396,23 @@ func ExampleXMLToJSON() {
 	//	}
 	//}
 }
+
+func ExampleJSONToMap() {
+	jsonTestString := `
+{ 
+	"Person": {
+		"Name": "Jhon",
+		"Surname": "Dhoe",
+		"Gender": 0,
+		"Maried": true
+	}
+}`
+	m, err := JSONToMap([]byte(jsonTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%v\n", m)
+	//Output:
+	//map[Person:map[Gender:0 Maried:true Name:Jhon Surname:Dhoe]]
+}
