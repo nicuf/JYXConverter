@@ -416,3 +416,21 @@ func ExampleJSONToMap() {
 	//Output:
 	//map[Person:map[Gender:0 Maried:true Name:Jhon Surname:Dhoe]]
 }
+
+func ExampleYamlToMap() {
+	yamlTestString := `
+Person:
+  Name: Jhon
+  Surname: Dhoe
+  Gender: 0
+  Maried: true
+`
+	m, err := YamlToMap([]byte(yamlTestString))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(m)
+	//Output:
+	//map[Person:map[Gender:0 Maried:true Name:Jhon Surname:Dhoe]]
+}
