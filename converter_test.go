@@ -8,28 +8,28 @@ import (
 
 const jsonTestString string = `
 { 
-	\"Person\": {
-		\"Name\": \"Jhon\",
-		\"Surname\": \"Dhoe\",
-		\"Gender\": 0,
-		\"Maried\": true,
-		\"Skills\": [
-			\"programming\",
-			\"gardening\",
-			\"communication\"
+	"Person": {
+		"Name": "Jhon",
+		"Surname": "Dhoe",
+		"Gender": 0,
+		"Maried": true,
+		"Skills": [
+			"programming",
+			"gardening",
+			"communication"
 		],
-		\"Address\": {
-			\"City\": \"Wien\",
-			\"HouseNmbr\": \"34\",
-			\"ApartmentNmbr\": \"90\",
-			\"Province\": {
-				\"Country\": \"Austria\",
-				\"County\": \"WienCounty\"
+		"Address": {
+			"City": "Wien",
+			"HouseNmbr": "34",
+			"ApartmentNmbr": "90",
+			"Province": {
+				"Country": "Austria",
+				"County": "WienCounty"
 			}
 		},
-		\"SocialPages\": {
-			\"facebook\": \"fbJhon\",
-			\"linkedin\": \"lkdnJhon\"
+		"SocialPages": {
+			"facebook": "fbJhon",
+			"linkedin": "lkdnJhon"
 		}
 	}
 }`
