@@ -188,14 +188,7 @@ func TestYamlToXMLAndJSONPositiveFlow(t *testing.T) {
 }
 
 func TestXMLToYamlAndJSONPositiveFlow(t *testing.T) {
-	xmlBytes, err := ioutil.ReadFile("./test_files/Person.xml")
-
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-
-	t.Log("xml from file is:")
-	t.Log(string(xmlBytes))
+	xmlBytes := []byte(xmlTestString)
 	yamlBytes, err := XMLToYaml(xmlBytes)
 
 	if err != nil {
