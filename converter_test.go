@@ -2,7 +2,6 @@ package jyxconverter
 
 import (
 	"fmt"
-	"io/ioutil"
 	"testing"
 )
 
@@ -36,24 +35,24 @@ const jsonTestString string = `
 
 const yamlTestString string = `
 Person:
-	name: Jhon
-	surname: Dhoe
-	gender: 0
-	maried: true
-	skills:
-		- programming
-		- gardening
-		- communication
-	address:
-		city: Wien
-		housenmbr: "34"
-		apartmentnmbr: "90"
-		province: 
-			country: Austria
-			county: WienCounty
-	socialpages:
-		facebook: fbJhon
-		linkedin: lkdnJhon
+  name: Jhon
+  surname: Dhoe
+  gender: 0
+  maried: true
+  skills:
+    - programming
+    - gardening
+    - communication
+  address:
+    city: Wien
+    housenmbr: "34"
+    apartmentnmbr: "90"
+    province: 
+      country: Austria
+      county: WienCounty
+  socialpages:
+    facebook: fbJhon
+    linkedin: lkdnJhon
 `
 
 const xmlTestString = `
@@ -160,14 +159,7 @@ func TestJSONToXMLAndYamlPositiveFlow(t *testing.T) {
 }
 
 func TestYamlToXMLAndJSONPositiveFlow(t *testing.T) {
-	yamlBytes, err := ioutil.ReadFile("./test_files/Person.yaml")
-
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-
-	t.Log("yaml from file is:")
-	t.Log(string(yamlBytes))
+	yamlBytes := []byte(yamlTestString)
 	xmlBytes, err := YamlToXML(yamlBytes)
 
 	if err != nil {
